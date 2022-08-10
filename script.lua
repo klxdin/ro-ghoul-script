@@ -1,4 +1,4 @@
-local gui = loadstring(game:HttpGetAsync("https://raw.githubusercontent.com/z4gs/scripts/master/testtttt.lua"))():AddWindow("Ро-Гуль АвтоФармер", {
+local gui = loadstring(game:HttpGetAsync("https://raw.githubusercontent.com/z4gs/scripts/master/testtttt.lua"))():AddWindow("Ро-Гуль Чит", {
     main_color = Color3.fromRGB(0,0,0),
     min_size = Vector2.new(373, 340),
     can_resize = false
@@ -10,7 +10,7 @@ local get = setmetatable({}, {
     end
 })
 
-local tab1, tab2, tab3, tab4 = gui:AddTab("Основное"), gui:AddTab("Настройки Фарма"), gui:AddTab("Тренеры"), gui:AddTab("Разное")
+local tab1, tab2, tab3, tab4 = gui:AddTab("Основное"), gui:AddTab("Настройки для Фарма"), gui:AddTab("Тренера"), gui:AddTab("Разное")
 local btn, btn2, btn3, key, nmc, trainers, labels
 local findobj, findobjofclass, waitforobj, fire, invoke = get.FindFirstChild, get.FindFirstChildOfClass, get.WaitForChild, Instance.new("RemoteEvent").FireServer, Instance.new("RemoteFunction").InvokeServer
 local player = get.Players.LocalPlayer
@@ -20,7 +20,7 @@ repeat wait() until player:FindFirstChild("PlayerFolder")
 local team, remotes, stat = player.PlayerFolder.Customization.Team.Value, get.ReplicatedStorage.Remotes, player.PlayerFolder.StatsFunction
 local oldtick, farmtick = 0, 0
 local camera = workspace.CurrentCamera
-local myData = loadstring(game:HttpGet("https://raw.githubusercontent.com/z4gs/scripts/master/Settings.lua"))().new("Ro-Ghoul Autofarm", {
+local myData = loadstring(game:HttpGet("https://raw.githubusercontent.com/z4gs/scripts/master/Settings.lua"))().new("RoGhoul Autofarm", {
     Skills = {
         E = false,
         F = false,
@@ -33,11 +33,11 @@ local myData = loadstring(game:HttpGet("https://raw.githubusercontent.com/z4gs/s
         ["Koutarou Amon"] = false,
         ["Nishiki Nishio"] = false
     },
-    DistanceFromNpc = 1,
-    DistanceFromBoss = 7,
-    TeleportSpeed = 250,
-    ReputationFarm = false,
-    ReputationCashout = false,
+    DistanceFromNpc = 7,
+    DistanceFromBoss = 6,
+    TeleportSpeed = 300,
+    ReputationFarm = True,
+    ReputationCashout = True,
     AutoKickWhitelist = ""
 })
 
@@ -63,7 +63,7 @@ local array = {
 
 tab1:AddLabel("Цель")
 
-local drop = tab1:AddDropdown("Select", function(opt)
+local drop = tab1:AddDropdown("Выбрать", function(opt)
     array.targ = array.npcs[opt]
 end)
 
@@ -93,10 +93,10 @@ labels = setmetatable({
     text = {label = tab1:AddLabel("")},
     tfarm = {label = tab1:AddLabel("")},
     space = {label = tab1:AddLabel("")},
-    Quest = {prefix = "Current Quest: ", label = tab1:AddLabel("Нафармлено: None")},
-    Йен = {prefix = "Yen: ", label = tab1:AddLabel("Yen: 0"), value = 0, oldval = player.PlayerFolder.Stats.Yen.Value},
+    Quest = {prefix = "Текущий запуск: ", label = tab1:AddLabel("Текущий запуск: не начат")},
+    Yen = {prefix = "Йен: ", label = tab1:AddLabel("Йен: 0"), value = 0, oldval = player.PlayerFolder.Stats.Yen.Value},
     RC = {prefix = "RC: ", label = tab1:AddLabel("RC: 0"), value = 0, oldval = player.PlayerFolder.Stats.RC.Value},
-    Убийств = {prefix = "Kills: ", label = tab1:AddLabel("Kills: 0"), value = 0} 
+    Kills = {prefix = "Убийств: ", label = tab1:AddLabel("Убийств: 0"), value = 0} 
 }, {
     __call = function (self, typ, newv, oldv)
         if typ and newv then
@@ -127,7 +127,7 @@ end
 
 btn3 = tab1:AddButton("Сбросить", function() labels() end)
 
-if team == "CCG" then tab2:AddLabel("Стадия Квинке") else tab2:AddLabel("Стадия Кагуне") end
+if team == "CCG" then tab2:AddLabel("Quinque Stage") else tab2:AddLabel("Kagune Stage") end
 
 local drop2 = tab2:AddDropdown("[ 1 ]", function(opt)
     array.stage = array.stages[tonumber(opt)]
@@ -135,16 +135,16 @@ end)
 
 array.stage = "One"
 
-tab2:AddSwitch("Авто-Фарм Репутации", function(bool) 
+tab2:AddSwitch("Авто-фарм Репутации", function(bool) 
     myData:Set("ReputationFarm", bool)
 end):Set(myData:Get("ReputationFarm"))
 
-tab2:AddSwitch("Авто-Вывод Репутации", function(bool)
+tab2:AddSwitch("Авто-вывод Репутации", function(bool)
     myData:Set("ReputationCashout", bool)
 end):Set(myData:Get("ReputationCashout"))
 
 for i,v in pairs(array.boss) do
-    tab2:AddSwitch("Фарм Босса "..i.."(".."лвл "..v.."+)", function(bool)
+    tab2:AddSwitch("Фарм босса "i.."(".."лвл "..v.."+)", function(bool)
         local bosstable = myData:Get("Boss")
         bosstable[i] = bool
         myData:Set("Boss", bosstable)
@@ -153,13 +153,13 @@ end
 
 tab2:AddSlider("Скорость ТП", function(x)
     myData:Set("TeleportSpeed", x)
-end, {min = 90, max = 250}):Set(45)
+end, {min = 90, max = 300}):Set(45)
 
 tab2:AddSlider("Дистанция от моба", function(x)
     myData:Set("DistanceFromNpc", x * -1)
 end, {min = 0, max = 8}):Set(65)
 
-tab2:AddSlider("Дистанция от Боссов", function(x)
+tab2:AddSlider("Дистанция от босса", function(x)
     myData:Set("DistanceFromBoss", x * -1)
 end, {min = 0, max = 15}):Set(55)
 
@@ -202,7 +202,7 @@ btn2 = tab3:AddButton("Начать", function()
                     end
                 end
             elseif result == "TRAINING COMPLETE" then
-                labels("time", "Поменяйте тренера")
+                labels("time", "Switching to other trainer...")
                 for i,v in pairs(player.PlayerFolder.Trainers:GetDescendants()) do
                     if table.find(trainers, v.Name) and findobj(v, "Progress") and tonumber(v.Progress.Value) < 100 and tonumber(player.PlayerFolder.Trainers[player.PlayerFolder.Trainers[team.."Trainer"].Value].Progress.Value) == 100 then
                         invoke(remotes.Trainers.ChangeTrainer, v.Name)
@@ -210,7 +210,7 @@ btn2 = tab3:AddButton("Начать", function()
                     end
                 end
             else
-                labels("time", "Время отката тренера: "..result)
+                labels("time", "Время до следущей тренировки: "..result)
             end
             wait(1)
         end
@@ -222,10 +222,10 @@ end)
 
 labels.time = {label = tab3:AddLabel("")}
 
-tab4:AddSwitch("Авто прокачка Квинке/Кагуне", function(bool) array.weapon = bool end)
-tab4:AddSwitch("Авто прокачка Durability", function(bool) array.dura = bool end)
-tab4:AddSwitch(Авто Кик", function(bool) array.kick = bool end)
-tab4:AddLabel("Вайтлист Авто Кика (одна линия- 1 имя)")
+tab4:AddSwitch("Авто-прокачка Кагуне/Квинке", function(bool) array.weapon = bool end)
+tab4:AddSwitch("Авто-прокачка Durability", function(bool) array.dura = bool end)
+tab4:AddSwitch("Авто-кик", function(bool) array.kick = bool end)
+tab4:AddLabel("Вайтлист Автокика (Одна линия - Один никнейм)")
 
 local console = tab4:AddConsole({
     ["y"] = 50,
@@ -239,7 +239,7 @@ console:OnChange(function(newtext)
 end)
 
 for i,v in pairs(array.skills) do
-    tab4:AddSwitch("Авто-использование "..i.." скилла (на боссах)", function(bool)
+    tab4:AddSwitch("Авто использование "..i.." скилла (на боссах)", function(bool)
         local skillstable = myData:Get("Skills")
         skillstable[i] = bool
         myData:Set("Skills", skillstable)
@@ -342,7 +342,7 @@ local function getQuest(typ)
 
     if array.autofarm and not array.died and (npc.HumanoidRootPart.Position - player.Character.HumanoidRootPart.Position).Magnitude <= 20 then
         if typ then 
-            labels("text", "Getting quest...")
+            labels("text", "Получаем задание репутации...")
             invoke(remotes[npc.Name].Task)
             invoke(remotes[npc.Name].Task)
             local quest = waitforobj(player.PlayerFolder.CurrentQuest.Complete, "Aogiri Member")
@@ -518,9 +518,9 @@ while true do
                         end
 
                         if array.autofarm and player.Character.Humanoid.Health > 0 then
-                            labels("Kills", 1)
+                            labels("Убийств", 1)
                             if npc.Name ~= "Eto Yoshimura" and not findobj(npc.Parent, "Gyakusatsu") and npc.Name ~= "Gyakusatsu" then  
-                                labels("text", "Собираем трупы...")
+                                labels("text", "Собираем труп...")
                                 collect(npc)
                             end
                         end
@@ -529,7 +529,7 @@ while true do
                     labels("text", "Цель не найдена, ожидание...")
                 end
             else
-                labels("text", "Ожидание возрождения пользователя...")
+                labels("text", "Ожидание возрождения персонажа...")
                 array.died = true
             end
         end)
